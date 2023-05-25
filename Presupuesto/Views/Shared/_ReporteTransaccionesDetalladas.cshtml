@@ -1,0 +1,75 @@
+﻿@model ReporteTransaccionesDetalladas
+
+<h4>
+    <a asp-route-mes="@ViewBag.mesAnterior" asp-route-año="@ViewBag.añoAnterior"
+       class="btn btn-secondary"><i class="bi-chevron-left"></i></a>
+    @Model.fechaInicio.ToString("MMM")-@Model.fechaInicio.Year
+    <a asp-route-mes="@ViewBag.mesPosterior" asp-route-año="@ViewBag.añoPosterior" class="btn btn-secondary">
+        <i class="bi-chevron-right"></i>
+    </a>
+</h4>
+
+<div class="contenedores-totales mb-3">
+    <div>
+        <div>
+            <strong>Depósitos</strong>
+        </div>
+        <div class="activo">
+            @Model.BalanceDepositos.ToString("N")
+        </div>
+    </div>
+    <div>
+        <div>
+            <strong>Retiros</strong>
+        </div>
+        <div class="pasivo">
+            @Model.BalanceRetiros.ToString("N")
+        </div>
+    </div>
+    <div>
+        <div>
+            <strong>Total</strong>
+        </div>
+        <div>
+            @Model.Total.ToString("N")
+        </div>
+    </div>
+</div>
+
+@if (Model.TransaccionesAgrupadas.Count() == 0)
+{
+    <h5>No hay datos para mostrar</h5>
+}
+else
+{
+    <table class="table">
+        <tbody>
+            @foreach (var transaccion in Model.TransaccionesAgrupadas)
+            {
+                <tr style="background-color: lightblue; font-size: 25px">
+                    <td colspan="3">
+                        @transaccion.FechaTransaccion.Day
+                        <span class="badge bg-secondary">@transaccion.FechaTransaccion.ToString("ddd")</span>
+                    </td>
+                    <td class="activo">@transaccion.BalanceDepositos.ToString("N")</td>
+                    <td class="pasivo">@transaccion.BalanceRetiros.ToString("N")</td>
+                </tr>
+                @foreach (var i in transaccion.Transacciones)
+                {
+                    <tr style="vertical-align: middle">
+                        <td>
+                            <a asp-controller="Transacciones" asp-action="Editar" asp-route-id="@i.Id"
+                   asp-route-urlRetorno="@ViewBag.UrlRetorno">
+                                <i class="bi-pencil"></i>
+                            </a>
+                        </td>
+                        <td>@i.Categoria </td>
+                        <td>@i.Cuenta </td>
+                        <td class="activo">@(i.TipoOperacionId == TipoOperacion.Ingreso ? i.Monto.ToString("N") : null)</td>
+                        <td class="pasivo">@(i.TipoOperacionId == TipoOperacion.Gasto ? i.Monto.ToString("N") : null)</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
