@@ -40,7 +40,7 @@ namespace Presupuesto.Servicios
         public async Task<Cuenta> ObtenerPorId(int id, int usuarioId)
         {
             using var connecion = new SqlConnection(ConnecctionString);
-            return await connecion.QueryFirstOrDefaultAsync<Cuenta>(@"SELECT C.id, C.Nombre, C.Balance, C.Descripcion, TC.id  
+            return await connecion.QueryFirstOrDefaultAsync<Cuenta>(@"SELECT C.id, C.Nombre, C.Balance, C.Descripcion, TipoCuentaId  
                                                         FROM Cuentas C INNER JOIN TiposCuentas TC ON TC.id = C.TipoCuentaId 
                                                         WHERE TC.UsuarioId = @UsuarioId AND C.id = @Id", new { id, usuarioId });
         }
